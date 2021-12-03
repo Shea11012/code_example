@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package main;
+option go_package = "./protocs";
+
+message Request {
+    string value = 1;
+}
+
+message Reply {
+    string value = 1;
+}
+
+service Hello {
+    rpc Say(Request) returns (Reply);
+}

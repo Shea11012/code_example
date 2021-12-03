@@ -1,0 +1,76 @@
+version: "3.8"
+
+networks:
+  cluster-redis:
+    driver: bridge
+
+services:
+  redis7001: 
+    image: redis:alpine3.13
+    container_name: redis7001
+    entrypoint: ["docker-entrypoint.sh","create-cluster"]
+    volumes:
+      - "./conf/7001.conf:/etc/redis/redis.conf"
+      - "./docker-entrypoint.sh:/usr/local/bin/docker-entrypoint.sh"
+    ports:
+      - "7001:7001"
+    environment:
+      TZ: "Asia/Shanghai"
+      REDIS_PASSWORD: "Chain33"
+    networks:
+      - cluster-redis
+
+  redis7002: 
+    image: redis:alpine3.13
+    container_name: redis7002
+    command: ["redis-server","/etc/redis/redis.conf"]
+    volumes:
+      - "./conf/7002.conf:/etc/redis/redis.conf"
+    environment:
+      TZ: "Asia/Shanghai"
+    networks:
+      - cluster-redis
+
+  redis7003: 
+    image: redis:alpine3.13
+    container_name: redis7003
+    command: ["redis-server","/etc/redis/redis.conf"]
+    volumes:
+      - "./conf/7003.conf:/etc/redis/redis.conf"
+    environment:
+      TZ: "Asia/Shanghai"
+    networks:
+      - cluster-redis
+
+  redis7004: 
+    image: redis:alpine3.13
+    container_name: redis7004
+    command: ["redis-server","/etc/redis/redis.conf"]
+    volumes:
+      - "./conf/7004.conf:/etc/redis/redis.conf"
+    environment:
+      TZ: "Asia/Shanghai"
+    networks:
+      - cluster-redis
+
+  redis7005: 
+    image: redis:alpine3.13
+    container_name: redis7005
+    command: ["redis-server","/etc/redis/redis.conf"]
+    volumes:
+      - "./conf/7005.conf:/etc/redis/redis.conf"
+    environment:
+      TZ: "Asia/Shanghai"
+    networks:
+      - cluster-redis
+
+  redis7006: 
+    image: redis:alpine3.13
+    container_name: redis7006
+    command: ["redis-server","/etc/redis/redis.conf"]
+    volumes:
+      - "./conf/7006.conf:/etc/redis/redis.conf"
+    environment:
+      TZ: "Asia/Shanghai"
+    networks:
+      - cluster-redis
