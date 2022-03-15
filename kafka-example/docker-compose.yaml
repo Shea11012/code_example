@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  zookeeper:
+    image: "bitnami/zookeeper:3.7"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+
+  kafka:
+    image: "bitnami/kafka:3.1.0"
+    ports:
+      - "9092:9092"
+    environment:
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://host.docker.internal:9092
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      # 允许使用plaintext协议
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      # 关闭自动创建topic
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false
+      # 全局消息过期时间1小时
+      - KAFKA_CFG_LOG_RETENTION_HOURS=1
+    depends_on:
+      - zookeeper
+ 
