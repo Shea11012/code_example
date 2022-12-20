@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  ocr:
+    build:
+      dockerfile: Dockerfile
+    container_name: ocr
+    volumes:
+      - ".:/workspace"
+    tty: true
+    environment:
+      TZ: "Asia/Shanghai"
