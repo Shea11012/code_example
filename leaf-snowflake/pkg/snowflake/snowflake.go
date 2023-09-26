@@ -66,6 +66,7 @@ func (n *Node) NextId() (int64, error) {
 
 	n.lastTime = currentTime
 
-	r := currentTime<<TimeShift | (n.nodeID << nodeShift) | (n.sequence)
+	// 这里需要减去epoch时间，不然就会导致epoch前面的时间浪费
+	r := int64(currentTime-Epoch)<<TimeShift | (n.nodeID << nodeShift) | (n.sequence)
 	return r, nil
 }

@@ -4,44 +4,48 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
-	"io"
 )
 
-type GCM struct {
-	key []byte
-	gcm cipher.AEAD
-}
+var secretKey = "N1PCdw3M2B1TfJhoaY2mL736p2vCUc47"
 
-func NewGCM(key []byte) (*GCM, error) {
-	cipherBlock, err := aes.NewCipher(key)
+func encrypt(plainText string) string {
+	block, err := aes.NewCipher([]byte(secretKey))
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
 
-	gcm, err := cipher.NewGCM(cipherBlock)
+	gcm, err := cipher.NewGCM(block)
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
 
-	return &GCM{
-		key: key,
-		gcm: gcm,
-	}, nil
-}
-
-func (g *GCM) Encrypt(message []byte) ([]byte, error) {
-	nonce := make([]byte, g.gcm.NonceSize())
-	_, err := io.ReadFull(rand.Reader, nonce)
+	nonce := make([]byte, gcm.NonceSize())
+	_, err = rand.Read(nonce)
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
 
-	cipherText := g.gcm.Seal(nil, nonce, message, nil)
-	return append(nonce, cipherText...), nil
+	cipherText := gcm.Seal(nonce, nonce, []byte(plainText), nil)
+
+	return string(cipherText)
 }
 
-func (g *GCM) Decrypt(cipherText []byte) ([]byte, error) {
-	nonce := cipherText[:g.gcm.NonceSize()]
-	cipherText = cipherText[g.gcm.NonceSize():]
-	return g.gcm.Open(nil, nonce, cipherText, nil)
+func decrypt(cipherText string) string {
+	block, err := aes.NewCipher([]byte(secretKey))
+	if err != nil {
+		panic(err)
+	}
+
+	gcm, err := cipher.NewGCM(block)
+	if err != nil {
+		panic(err)
+	}
+
+	nonceSize := gcm.NonceSize()
+	nonce, cipherText := cipherText[:nonceSize], cipherText[nonceSize:]
+	plainText, err := gcm.Open(nil, []byte(nonce), []byte(cipherText), nil)
+	if err != nil {
+		panic(err)
+	}
+	return string(plainText)
 }
